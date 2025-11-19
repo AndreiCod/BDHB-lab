@@ -1,0 +1,124 @@
+"""
+Exercise — Gene Co-Expression Networks (GCEs) — Building the network and detecting modules
+
+Objective:
+- Build a co-expression network from an RNA-Seq expression matrix
+- Detect gene modules (communities) using a Louvain-like algorithm (or alternative)
+
+Instructions (in the lab):
+1) Data preparation
+   - Download and prepare the expression matrix (e.g., GSE115469) into a CSV with:
+     * rows = genes (index), columns = samples (sample IDs)
+   - Save the file to: data/work/<handle>/lab06/expression_matrix.csv
+
+2) Preprocessing
+   - log2(x + 1)
+   - filter low-variance genes
+
+3) Correlation → Adjacency
+   - complete the `correlation_matrix` function
+   - the function `adjacency_from_correlation` is already implemented
+
+4) Graph + Modules
+   - build the graph with NetworkX
+   - detect modules (Louvain or alternative)
+   - export the gene → module mapping to submissions/<handle>/modules_<handle>.csv
+
+Note:
+- Document in <github_handle>_notes.md: correlation metric, threshold, short observations.
+"""
+
+from __future__ import annotations
+from pathlib import Path
+from typing import Dict, Iterable
+
+import numpy as np
+import pandas as pd
+import networkx as nx
+
+
+# --------------------------
+# Config — fill in as needed
+# --------------------------
+INPUT_CSV =
+OUTPUT_DIR =
+OUTPUT_CSV =
+
+CORR_METHOD = "spearman"   # TODO: "pearson" or "spearman"
+VARIANCE_THRESHOLD =       # threshold for filtering genes
+ADJ_THRESHOLD =            # threshold for |cor| (e.g., 0.6)
+USE_ABS_CORR =             # True => use |cor| when thresholding
+MAKE_UNDIRECTED =          # co-expression networks are usually undirected
+
+
+def read_expression_matrix(path: Path) -> pd.DataFrame:
+    return df
+
+
+def log_and_filter(df: pd.DataFrame,
+                   variance_threshold: float) -> pd.DataFrame:
+    """
+    Preprocessing:
+    - apply log2(x+1)
+    - filter genes with low variance
+    """
+
+
+def correlation_matrix(df: pd.DataFrame,
+                       method: str = "spearman",
+                       use_abs: bool = True) -> pd.DataFrame:
+    """
+    TODO: compute the gene–gene correlation matrix (rows).
+    """
+    corr = pd.DataFrame(np.eye(len(df)), index=df.index, columns=df.index)
+    return corr
+
+
+def adjacency_from_correlation(corr: pd.DataFrame,
+                               threshold: float,
+                               weighted: bool = False) -> pd.DataFrame:
+    """
+    Build adjacency matrix from correlations.
+    - binary: A_ij = 1 if corr_ij >= threshold, else 0
+    - weighted: A_ij = corr_ij if corr_ij >= threshold, else 0
+    """
+
+
+def graph_from_adjacency(A: pd.DataFrame,
+                         undirected: bool = True) -> nx.Graph:
+    if undirected:
+        G = nx.from_pandas_adjacency(A)
+    else:
+        G = nx.from_pandas_adjacency(A, create_using=nx.DiGraph)
+    isolates = list(nx.isolates(G))
+    if isolates:
+        G.remove_nodes_from(isolates)
+    return G
+
+
+def detect_modules_louvain_or_greedy(G: nx.Graph) -> Dict[str, int]:
+    """
+    TODO: detect communities (modules) and return a dict gene -> module_id.
+    Options:
+      - try louvain_communities(G, seed=42) if available
+      - otherwise greedy_modularity_communities(G)
+    """
+
+
+def save_modules_csv(mapping: Dict[str, int], out_csv: Path) -> None:
+    out_csv.parent.mkdir(parents=True, exist_ok=True)
+    df_modules = (
+        pd.DataFrame({"Gene": list(mapping.keys()), "Module": list(mapping.values())})
+        .sort_values(["Module", "Gene"])
+    )
+    df_modules.to_csv(out_csv, index=False)
+
+
+if __name__ == "__main__":
+    print(f"Graph created with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges.")
+
+    gene_to_module = detect_modules_louvain_or_greedy(G)
+    print(f"Detected {len(set(gene_to_module.values()))} modules.")
+
+    save_modules_csv(gene_to_module, OUTPUT_CSV)
+    print(f"Saved gene→module mapping to: {OUTPUT_CSV}")
