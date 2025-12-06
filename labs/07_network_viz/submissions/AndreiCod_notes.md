@@ -1,6 +1,6 @@
 # Lab 07 - Network Visualization Notes
 
-**Author**: AndreiCod
+**Author**: Andrei Daha, Radu Bals
 
 ## Layout Method Used
 
@@ -25,3 +25,6 @@ Visualization provides several key advantages over pure numeric analysis:
 5. **Quality Control**: Visualization can reveal potential issues like disconnected components or unexpected connections that might not be obvious from summary statistics alone.
 
 In summary, visualization transforms abstract numeric relationships into a spatial representation that leverages human pattern recognition abilities, making complex co-expression networks interpretable and actionable.
+
+## AI usage
+Github Copilot was used in agent mode to do this assignment. All code was reviewed and edited by the student to ensure correctness and understanding.
