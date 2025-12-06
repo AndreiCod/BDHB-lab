@@ -77,3 +77,6 @@ For the breast cancer dataset:
 - **Phylogenetics** could trace the clonal evolution within a single tumor, showing how cancer cell populations diverged from a common ancestor
 
 Both approaches contribute to understanding cancer biology but answer different questions: clustering asks "which tumors are similar?" while phylogenetics asks "how did these cells evolve?"
+
+## AI usage
+Github Copilot was used in agent mode to do this assignment. All code was reviewed and edited by the student to ensure correctness and understanding.
