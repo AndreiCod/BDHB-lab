@@ -52,3 +52,6 @@
 ### When to Use Each Approach
 - Use **clustering** when you want a simple partition of genes/samples and don't need pairwise relationship details.
 - Use **co-expression networks** when you want to study gene-gene relationships, identify hub genes, or perform network-based functional enrichment.
+
+## AI usage
+Github Copilot was used in agent mode to do this assignment. All code was reviewed and edited by the student to ensure correctness and understanding.
