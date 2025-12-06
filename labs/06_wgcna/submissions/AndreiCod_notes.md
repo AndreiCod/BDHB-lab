@@ -1,6 +1,6 @@
 # Lab 06 — Gene Co-Expression Networks Notes
 
-**Author**: AndreiCod  
+**Author**: Andrei Daha, Radu Bals  
 **Date**: December 2024
 
 ## Configuration Used
