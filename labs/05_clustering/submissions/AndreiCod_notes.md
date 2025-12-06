@@ -1,6 +1,6 @@
 # Clustering Exercise Notes
 
-**Author**: AndreiCod  
+**Author**: Andrei Daha, Radu Bals 
 **Date**: December 6, 2025
 
 ## Dataset
