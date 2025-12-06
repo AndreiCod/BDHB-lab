@@ -1,6 +1,6 @@
 # Lab 04 - Phylogenetics Notes
 
-**Author:** AndreiCod  
+**Authors:** Andrei Daha, Bals Radu
 **Date:** December 6, 2025
 
 ## Reflection
@@ -34,3 +34,6 @@ A phylogenetic tree provides several key advantages over a simple distance matri
 ## Results
 
 The Neighbor-Joining tree shows that the human and mouse TP53 sequences are more closely related to each other than to the zebrafish sequence, which aligns with known mammalian vs. fish evolutionary divergence.
+
+## AI usage
+Github Copilot was used in agent mode to do this assignment. All code was reviewed and edited by the student to ensure correctness and understanding.
