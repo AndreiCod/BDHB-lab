@@ -1,4 +1,4 @@
-# Week 6 — TP53 Co-Expression Networks Notes
+# Week 6 — Gene Co-Expression Networks Notes
 
 # Authors
 - Student: Andrei Codrin Daha (AndreiCod)
@@ -6,68 +6,113 @@
 
 
 ## Task 1 — Dataset Preparation
-- Generated synthetic TP53-associated RNA-Seq dataset with 200 genes and 30 samples (15 tumor, 15 normal) per `Task1_data_preparation.ipynb`.
-- Applied log2(x+1) transformation and filtered genes with variance < 0.1.
-- Created 5 biologically-inspired gene modules: TP53 pathway (apoptosis), Cell cycle regulators, DNA damage response, Metabolic genes, and Housekeeping genes.
-- Output: `artifacts/task1_expression_preprocessed.csv` with 67 genes after filtering.
+- Loaded GSE50081 Non-Small Cell Lung Cancer (NSCLC) microarray dataset (Der et al., PLoS ONE 2014) per `Task1_data_preparation.ipynb`.
+- Dataset contains 181 tumor samples (adenocarcinoma + squamous cell carcinoma) with expression profiles.
+- Downloaded via GEOparse and mapped Affymetrix probe IDs (GPL570) to HUGO gene symbols.
+- Applied variance filtering to retain top 2000 most variable genes for WGCNA analysis.
+- **TP53 confirmed present** in the final gene set for tumor-relevant analysis.
+- Output: `artifacts/task1_expression_preprocessed.csv` with 2001 genes after filtering.
+
+| Parameter | Value |
+|-----------|-------|
+| Dataset | GSE50081 (NSCLC Lung Cancer) |
+| Platform | Affymetrix GPL570 |
+| Total samples | 181 tumor samples |
+| Cancer types | Adenocarcinoma + Squamous Cell |
+| Genes after filtering | 2001 |
+| Target gene | **TP53 ✓** |
 
 ## Task 2 — Network Construction
-- Computed Pearson correlation matrix across all gene pairs per `Task2_network_construction.ipynb`.
-- Applied WGCNA-style soft-thresholding with power=6 to create weighted adjacency matrix.
-- Evaluated soft-threshold powers using scale-free topology criterion.
+- Computed Pearson correlation matrix across all 2001 gene pairs per `Task2_network_construction.ipynb`.
+- Applied WGCNA-style soft-thresholding with optimal power=5 (R² = 0.91 scale-free fit).
+- Evaluated soft-threshold powers 1-20 using scale-free topology criterion.
 - Output: `artifacts/task2_adjacency_matrix.csv` and `artifacts/task2_correlation_matrix.csv`.
 
 | Parameter | Value |
 |-----------|-------|
 | Correlation method | Pearson |
-| Soft-threshold power | 6 |
+| Soft-threshold power | 5 |
+| Scale-free R² | 0.91 |
 | Network type | Unsigned (absolute correlation) |
 
 ## Task 3 — Module Detection
-- Computed Topological Overlap Matrix (TOM) to capture network topology per `Task3_module_detection.ipynb`.
-- Applied both hierarchical clustering (average linkage on TOM dissimilarity) and Louvain community detection.
-- Identified hub genes as top 10% intramodular connectivity within each module.
+- Applied **PyWGCNA** (authentic R WGCNA implementation in Python) per `Task3_module_detection.ipynb`.
+- Computed Topological Overlap Matrix (TOM) with hierarchical clustering.
+- Used **Dynamic Tree Cut** algorithm for module detection (WGCNA standard method).
+- Identified 6 co-expression modules using color-based naming convention.
+- **TP53 assigned to darkgrey module** (largest module, 625 genes).
 - Output: `artifacts/task3_module_assignments.csv` and `artifacts/task3_hub_genes.csv`.
 
 | Metric | Value |
 |--------|-------|
-| Modules detected (Louvain) | 4 |
-| Hub genes identified | 7 |
-| Largest module size | 20 genes |
+| WGCNA method | PyWGCNA (TOM + Dynamic Tree Cut) |
+| Modules detected | **6** |
+| Hub genes identified | 60 (top 10 per module) |
+| Largest module | darkgrey (625 genes) |
+| TP53 module | **darkgrey** |
 
 ## Task 4 — Network Visualization
-- Visualized full co-expression network with nodes colored by module and hub genes labeled per `Task4_visualization.ipynb`.
+- Visualized co-expression network with nodes colored by WGCNA module colors per `Task4_visualization.ipynb`.
 - Created hierarchical clustering dendrogram with module color bar.
-- Generated correlation heatmap ordered by module membership.
+- Generated correlation heatmap ordered by module membership showing clear block-diagonal structure.
 - Output: PNG visualizations in `artifacts/task4_*.png`.
 
 ## Task 5 — Biological Interpretation
-- Performed Fisher's exact test enrichment against curated pathway gene sets per `Task5_enrichment.ipynb`.
-- Analyzed pathways: Apoptosis, Cell Cycle, DNA Damage Response, p53 Signaling, Metabolism.
-- Characterized TP53's position in Module 1 (Apoptosis).
-- Output: `artifacts/task5_enrichment_results.csv` and `artifacts/task5_interpretation.json`.
+- Performed functional enrichment using **gseapy/Enrichr** API per `Task5_enrichment.ipynb`.
+- Queried KEGG_2021_Human, GO_Biological_Process_2023, and Reactome_2022 databases.
+- Generated module summaries with hub gene characterization.
+- Output: `artifacts/task5_enrichment_*.csv` for each module.
 
 ### Key Findings:
 
-| Module | Size | Top Pathway | Hub Genes | P-value |
-|--------|------|-------------|-----------|---------|
-| 1 | 20 | Apoptosis | APAF1, NOXA | 2.03e-14 |
-| 2 | 20 | Cell Cycle | CDKN1A, E2F2 | 1.73e-17 |
-| 3 | 20 | DNA Damage Response | XRCC1, ERCC2 | 3.62e-16 |
-| 4 | 7 | Metabolism | AMPK | 1.15e-09 |
+| Module | Size | Biological Function | Key Pathways |
+|--------|------|---------------------|--------------|
+| **darkgrey** (TP53) | 625 | Lung adenocarcinoma markers | Surfactant metabolism, tight junctions, drug metabolism |
+| lightgrey | 600 | Squamous cell markers | Epidermis development, keratinization, cornification |
+| black | 230 | Immune/cell cycle | B-cell receptor signaling, cell cycle, DNA replication |
+| gainsboro | 224 | Immune signaling | Chemokine signaling, cytokine-cytokine interaction |
+| whitesmoke | 162 | Inflammatory/ECM | Inflammatory response, ECM-receptor interaction |
+| silver | 160 | Coagulation/interferon | Complement/coagulation cascades, type I interferon |
 
-1. **TP53 pathway module (Module 1)**: Strongly enriched for apoptosis genes (BAX, PUMA, CASP3, CASP9). TP53 is positioned in this module with high connectivity.
-2. **Cell cycle module (Module 2)**: Enriched for CDK/cyclin genes (CDK2, CDK4, CCND1, CCNE1) and checkpoint regulators (CHEK1, CHEK2).
-3. **DNA damage response module (Module 3)**: Contains DNA repair genes (BRCA1, BRCA2, ATM, ATR, RAD51).
-4. **Metabolic module (Module 4)**: Smaller module with TP53-regulated metabolic genes (TIGAR, GLS2, SCO2).
+### Module Characterization:
+
+1. **Module darkgrey (TP53)**: Largest module containing **TP53** along with lung-specific genes. Enriched for surfactant metabolism (SFTPA1, SFTPB, SFTPC, SFTPD), tight junction assembly (CLDN3, CLDN7, CLDN18), and drug metabolism (CYP2B6). Hub genes include TP53, AGER, NKX2-1, and HOPX. Represents **lung adenocarcinoma** differentiation program with alveolar type II cell markers.
+
+2. **Module lightgrey (Squamous Cell)**: Second largest module with epidermis development genes. Enriched for keratinization (KRT5, KRT6A, KRT14), cornified envelope formation, and epithelial cell differentiation. Hub genes include TP63, KRT5, DSG3, and SPRR1B. Represents **squamous cell carcinoma** differentiation markers.
+
+3. **Module black (Immune/Cell Cycle)**: Contains B-cell receptor signaling genes (CD19, CD79A, MS4A1) and cell cycle regulators. Enriched for DNA replication, G1/S transition, and antigen processing. Reflects tumor-infiltrating lymphocytes and proliferative activity.
+
+4. **Module gainsboro (Chemokine/Immune)**: Enriched for chemokine signaling (CCL5, CXCL9, CXCL10, CXCL11), cytokine-cytokine receptor interaction, and T-cell activation. Hub genes include CD8A, GZMK, and IFNG. Represents cytotoxic T-cell infiltration in tumor microenvironment.
+
+5. **Module whitesmoke (Inflammatory/ECM)**: Contains inflammatory response genes and extracellular matrix components. Enriched for collagen fibril organization, ECM-receptor interaction, and complement activation. Hub genes include COL1A1, COL3A1, and MMP2. Represents tumor stroma and fibroblast activity.
+
+6. **Module silver (Coagulation/Interferon)**: Smallest module enriched for complement and coagulation cascades (C3, C7, SERPIND1), type I interferon signaling, and acute phase response. Hub genes include C3, SERPINA1, and F13A1. Reflects systemic inflammatory response in cancer.
 
 ## Reflection
 
 ### Challenges Encountered
-The main challenge was balancing network sparsity with biological signal. Initial variance filtering (threshold=0.5) was too aggressive, leaving only 21 genes and collapsing all into one module. Lowering to 0.1 retained 67 genes with distinct expression patterns, enabling meaningful module detection. The TOM-based approach helped by emphasizing shared neighbors rather than direct correlations alone.
+The primary challenge was selecting an appropriate dataset containing TP53. The initial GSE115469 liver dataset represented normal tissue where TP53 expression is low and stable. We switched to GSE50081 NSCLC lung cancer dataset where TP53 is highly relevant—TP53 mutations are common in lung cancer (~50% of cases). Another challenge was probe-to-gene mapping for Affymetrix arrays, resolved using the GPL570 annotation table with HUGO gene symbols.
 
 ### Insights Gained
-Co-expression networks reveal functional relationships beyond individual gene expression levels. The modular structure mirrors known TP53 biology: apoptosis genes cluster together, cell cycle regulators form a distinct module, and metabolic genes show coordinated expression changes in tumors. Hub genes like NOXA, E2F2, and XRCC1 represent central regulators within their respective modules.
+The WGCNA analysis beautifully separated **adenocarcinoma vs squamous cell carcinoma** programs:
+- **Darkgrey module** (TP53's module) contains lung-specific adenocarcinoma markers (NKX2-1/TTF-1, surfactant proteins)
+- **Lightgrey module** contains squamous differentiation markers (TP63, keratins)
+
+This reflects the fundamental biological distinction between these NSCLC subtypes. TP53 clustering with adenocarcinoma markers is interesting given that TP53 mutations have different prognostic implications in adenocarcinoma vs squamous cell carcinoma.
 
 ### Biological Interpretation
-TP53's position in the apoptosis module reflects its role as "guardian of the genome." The strong connections to BAX, PUMA, and caspases represent the transcriptional program TP53 activates during DNA damage-induced apoptosis. The separation of cell cycle genes into Module 2 suggests these represent a different facet of TP53 function (cell cycle arrest vs. apoptosis), which may be context-dependent in cancer. The distinct DNA damage response module highlights the repair machinery that works upstream of TP53 activation.
+The NSCLC co-expression network reveals the tumor's cellular composition:
+1. **Tumor cell programs**: Darkgrey (adenocarcinoma) and lightgrey (squamous) modules capture cancer cell differentiation states
+2. **Immune infiltration**: Black, gainsboro, and parts of silver modules represent tumor-infiltrating lymphocytes
+3. **Tumor microenvironment**: Whitesmoke module captures stromal/ECM components
+
+The hub genes identified have clinical relevance:
+- **NKX2-1** (TTF-1): Standard immunohistochemistry marker for lung adenocarcinoma
+- **TP63**: Squamous cell carcinoma marker
+- **CD8A, GZMK**: Cytotoxic T-cell markers predictive of immunotherapy response
+
+### TP53 Analysis
+**TP53 was successfully identified in the darkgrey module**, co-expressed with lung adenocarcinoma markers. This makes biological sense:
+- TP53 is the most frequently mutated gene in lung cancer
+- Wildtype TP53 co-expression with differentiation markers (surfactants, NKX2-1) reflects its role in maintaining differentiation
+- The module's enrichment for tight junctions (CLDN3, CLDN7) aligns with TP53's role in epithelial integrity

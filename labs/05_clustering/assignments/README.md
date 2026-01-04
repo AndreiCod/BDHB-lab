@@ -4,10 +4,10 @@ This folder hosts Jupyter notebooks that implement the Week 5 Clustering and Phy
 
 ## Notebooks
 
-- `Task1_clustering_methods.ipynb` — applies hierarchical, K-means, and DBSCAN clustering on Lab 4 sequences, evaluates cluster quality with Silhouette Score, and exports results to `artifacts/`.
-- `Task2_phylo_integration.ipynb` — builds NJ tree from Lab 4 sequences, compares clusters with tree branches, and annotates the tree with cluster labels.
+- `Task1_clustering_methods.ipynb` — applies hierarchical, K-means (K=2,3,4), and DBSCAN (eps × min_samples sweep) clustering using Lab 4's MSA-based distance matrix; exports to `artifacts/`.
+- `Task2_phylo_integration.ipynb` — loads Lab 4's NJ tree, compares clusters with tree clades using ARI/NMI, and annotates tree with cluster labels.
 
-All notebooks assume the Lab 4 FASTA files live under `data/work/<handle>/lab04/`. Run them from the repo root so relative paths stay consistent.
+All notebooks use artifacts from Lab 4 (`labs/04_phylogenetics/assignments/artifacts/`). Run from repo root so relative paths stay consistent.
 
-# AI usage
+## AI Usage
 Github Copilot was used in agent mode to do this assignment. All code was reviewed and edited by the student to ensure correctness and understanding.

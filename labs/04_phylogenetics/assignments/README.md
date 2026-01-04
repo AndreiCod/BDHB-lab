@@ -4,10 +4,10 @@ This folder hosts Jupyter notebooks that implement the Week 4 Phylogenetics assi
 
 ## Notebooks
 
-- `Task1_distances.ipynb` — fetches ≥10 TP53 sequences from NCBI, computes Hamming/p-distance matrix, and saves to `artifacts/task1_distance_matrix.csv`.
-- `Task2_nj_tree.ipynb` — builds a Neighbor-Joining tree with Biopython, extracts cluster statistics, and saves tree to `artifacts/task2_nj_tree.nwk`.
-- `Task3_msa_comparison.ipynb` — runs Clustal Omega via EBI REST API, analyzes conserved regions, and saves scores to `artifacts/task3_conservation_scores.csv`.
-- `Task4_visualization.ipynb` — generates graphical tree visualization using matplotlib and saves to `artifacts/task4_tree_plot.png`.
+- `Task1_distances.ipynb` — fetches 10 TP53 sequences from NCBI, runs MSA via Clustal Omega, computes p-distances, and saves to `artifacts/task1_distance_matrix.csv`.
+- `Task2_nj_tree.ipynb` — loads MSA from Task 1, builds a Neighbor-Joining tree with Biopython, and saves to `artifacts/task2_nj_tree.nwk`.
+- `Task3_msa_comparison.ipynb` — loads MSA from Task 1, analyzes conserved regions, and saves to `artifacts/task3_conservation_scores.csv`.
+- `Task4_visualization.ipynb` — loads tree from Task 2, generates graphical visualization, and saves to `artifacts/task4_tree_plot.png`.
 
 All notebooks assume the Lab data lives under `data/work/<handle>/`. Run them from the repo root so relative paths stay consistent.
 
