@@ -1,29 +1,46 @@
 # Lab 06 — Gene Co-Expression Networks Notes
 
-**Author**: Andrei Daha, Radu Bals  
+**Author**: Andrei Daha, Radu Bals
 **Date**: December 2024
+
+## Data Source
+- **Dataset**: GSE115469 - Single cell RNA sequencing of human liver
+- **Reference**: MacParland et al., "Single cell RNA sequencing of human liver reveals distinct intrahepatic macrophage populations", Nat Commun 2018
+- **Downloaded from**: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE115nnn/GSE115469/suppl/GSE115469_Data.csv.gz
+- **Raw data**: 20,007 genes × 8,444 cells (single-cell RNA-seq)
+- **Preprocessing**: Filtered to genes expressed in ≥100 cells, selected top 500 most variable genes
 
 ## Configuration Used
 
 ### Correlation Metric
 - **Method**: Spearman correlation
-- **Reasoning**: Spearman correlation is rank-based and robust to outliers, making it more suitable for gene expression data which often has non-linear relationships and can contain outliers.
+- **Reasoning**: Spearman correlation is rank-based and robust to outliers, making it more suitable for gene expression data which often has non-linear relationships and can contain outliers. Particularly important for single-cell data which has high dropout rates.
 
 ### Threshold
-- **Adjacency threshold**: 0.85
-- **Reasoning**: A high threshold (0.85) ensures that only strongly correlated gene pairs are connected in the network. This helps create clear module separation by keeping only the most reliable co-expression relationships.
+- **Adjacency threshold**: 0.5
+- **Reasoning**: A moderate threshold (0.5) balances between keeping meaningful co-expression relationships and avoiding too many isolated nodes. Single-cell data tends to have lower correlation values due to sparsity.
 
 ### Other Parameters
-- **Variance filtering threshold**: 0.1 (log2 scale)
-- **Use absolute correlation**: False (using signed correlation to distinguish positive from negative co-expression)
+- **Variance filtering threshold**: 0.5 (log2 scale)
+- **Use absolute correlation**: True (capturing both positive and negative co-expression)
 - **Network type**: Undirected (co-expression relationships are symmetric)
+- **Minimum cells for gene inclusion**: 100
 
 ## Results Summary
-- **Total genes analyzed**: 80
-- **Genes after filtering**: 80
-- **Network edges**: 593
-- **Modules detected**: 4
-- **Module sizes**: [20, 20, 20, 20]
+- **Total genes analyzed**: 500 (top variable genes)
+- **Genes in network**: 255 (245 isolated nodes removed)
+- **Network edges**: 13,541
+- **Modules detected**: 5
+- **Module sizes**: [69, 69, 66, 49, 2]
+
+### Biological Context
+The GSE115469 dataset represents the cellular landscape of human liver, including:
+- Hepatocytes (parenchymal cells)
+- Various immune cell populations (macrophages, T cells, B cells)
+- Endothelial cells
+- Stellate cells
+
+The detected modules likely correspond to cell-type specific gene expression programs and functional pathways in liver tissue.
 
 ## Reflection: How does a co-expression network differ from classical clustering?
 
