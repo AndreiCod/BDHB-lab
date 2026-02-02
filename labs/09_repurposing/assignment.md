@@ -11,7 +11,7 @@ Construct a drug-disease network from DrugBank, analyze its topology using key n
 ## Requirements
 
 ### 1. Dataset Preparation
-Use DrugBank **version 5.1.11**.
+Use DrugBank **version 5.1.11**(drive link).
 - **Dataset:** https://go.drugbank.com/
 - **Entities:**
   - Drugs: names of drugs with known targets.
